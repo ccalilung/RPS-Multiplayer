@@ -18,14 +18,19 @@
  firebase.initializeApp(config);
  var database = firebase.database();
 
+
+ //variables for jQuery 
  var image = $("<img>")
  var button = $("<button>")
 
+
+ //function to create player 1 button IDs as well as save elements in firebase
  function variablesPlayer1() {
      window.attributes = ["p1-rock", "p1-paper", "p1-scissors"]
      var name = $("#nameInput").val()
      database.ref().child('players/player1/name').set(name)
      database.ref().child("players/player1/selected_yn").set(true)
+     //on disconnect, player 1 gets deleted allowing for another person to play
      var connect1 = database.ref("players/player1");
      connect1.onDisconnect().remove();
      var clearTheChat = database.ref("chat");
@@ -50,7 +55,7 @@
  }
 
 
-
+//write the buttons and images after player has selected name and player #
  function choosePlayer() {
      values = ["Rock", "Paper", "Scissors"]
      for (i = 0; i < attributes.length; i++) {
@@ -79,7 +84,7 @@
          }
      }
  }
-
+//on click functions for player 1 and 2 buttons
  $("#player1").on("click", function () {
      variablesPlayer1();
      choosePlayer();
@@ -96,7 +101,7 @@
      clearButton();
  })
 
-
+//create chat form. 
  function chat() {
      var form = $("<form>");
      var input = $("<input>");
@@ -113,12 +118,14 @@
      clearChat();
  }
 
+ //clears the chat
  function clearChat() {
      $("#clearButton").on("click", function () {
          database.ref().child("chat").remove();
      })
  }
 
+ //submits the chat into firebase so the other browser can pull the chat
  function submit() {
      $("#submitButton").on("click", function () {
          event.preventDefault()
@@ -149,6 +156,7 @@
      })
  }
 
+ //registers the R/P/S of player 1 and player 2
  function clicks() {
      $("#p1-rock").on("click", function () {
          database.ref().child("playerchoices").child("player1").remove();
@@ -191,6 +199,7 @@
          database.ref().child("playerchoices").child("player2").set(p2)
      })
  }
+ //function checks if both players have made selection, if so, determine who wins via whoWins()
  database.ref().on("child_changed", function (childSnapshot) {
 
      // console.log(childSnapshot.val());
@@ -198,8 +207,7 @@
      // Store everything into a variable.
      p1 = childSnapshot.val().player1;
      p2 = childSnapshot.val().player2;
-     console.log(p1)
-     console.log(p2)
+
 
 
      // database.ref().child("player1").remove();
@@ -209,6 +217,7 @@
 
  })
 
+ //calc for who wins
  function whoWins() {
      {
          if ((p1 === 'Rock' && p2 === 'Scissors') || (p1 === 'Paper' && p2 === 'Rock') || (p1 === 'Scissors' && p2 === 'Paper')) {
@@ -258,7 +267,7 @@
      database.ref().child("playerchoices").remove();
  }
 
-
+//listener for browser not submitting the chat
  database.ref().on("value", function (childSnapshot) {
 
      // console.log(childSnapshot.val());
@@ -275,6 +284,7 @@
      }
  })
 
+ //if someone chose player 1 or player 2, make 2nd player choose only player 2 or player 1 respectively
  function clearButton() {
      database.ref().on("value", function (childSnapshot) {
          var player1Check = childSnapshot.val().players.player1.selected_yn
