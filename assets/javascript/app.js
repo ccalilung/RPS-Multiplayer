@@ -30,11 +30,9 @@
      connect1.onDisconnect().remove();
      var clearTheChat = database.ref("chat");
      clearTheChat.onDisconnect().remove();
-     database.ref().on("value", function (childSnapshot) {
-
-         //  var player2Check = childSnapshot.val().players.player2.selected_yn
-
-     })
+     var connect3 = database.ref("players/ties");
+     connect3.onDisconnect().remove();
+     
  }
 
  function variablesPlayer2() {
@@ -46,6 +44,8 @@
      connect2.onDisconnect().remove();
      var clearTheChat = database.ref("chat");
      clearTheChat.onDisconnect().remove();
+     var connect3 = database.ref("players/ties");
+     connect3.onDisconnect().remove();
 
  }
 
@@ -230,9 +230,6 @@
          p1 = 0;
          p1Wins++;
          database.ref().child('players/player1/wins').set(p1Wins);
-         database.ref().on("value" ,function (x) {
-            p1Wins = x.val().players.player1.wins
-        })
          $("#p1Wins").html("<h3>" + name1 + " Wins: " + p1Wins + "</h3>")
 
      }
@@ -244,9 +241,6 @@
          p2 = 0;
          p2Wins++
          database.ref().child('players/player2/wins').set(p2Wins);
-         database.ref().on("value" ,function (x) {
-            p2Wins = x.val().players.player2.wins
-        })
          $("#p2Wins").html("<h3>" + name2 + " Wins: " + p2Wins + "</h3>")
      }
      if (p1 === 2 && p2 === 2) {
@@ -258,9 +252,6 @@
          p2 = 0;
          ties++
          database.ref().child('players/ties').set(ties);
-         database.ref().on("value" ,function (x) {
-             ties = x.val().players.ties
-         })
          $("#tied").html("<h3>Ties: " + ties + "</h3>")
 
      }
