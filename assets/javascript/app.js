@@ -37,7 +37,7 @@
      clearTheChat.onDisconnect().remove();
      var connect3 = database.ref("players/ties");
      connect3.onDisconnect().remove();
-     
+
  }
 
  function variablesPlayer2() {
@@ -55,7 +55,7 @@
  }
 
 
-//write the buttons and images after player has selected name and player #
+ //write the buttons and images after player has selected name and player #
  function choosePlayer() {
      values = ["Rock", "Paper", "Scissors"]
      for (i = 0; i < attributes.length; i++) {
@@ -84,7 +84,7 @@
          }
      }
  }
-//on click functions for player 1 and 2 buttons
+ //on click functions for player 1 and 2 buttons
  $("#player1").on("click", function () {
      variablesPlayer1();
      choosePlayer();
@@ -101,7 +101,7 @@
      clearButton();
  })
 
-//create chat form. 
+ //create chat form. 
  function chat() {
      var form = $("<form>");
      var input = $("<input>");
@@ -267,7 +267,7 @@
      database.ref().child("playerchoices").remove();
  }
 
-//listener for browser not submitting the chat
+ //listener for browser not submitting the chat
  database.ref().on("value", function (childSnapshot) {
 
      // console.log(childSnapshot.val());
@@ -293,6 +293,9 @@
              $("#player-one").html("<h2>Player 1 is " + name1 + "</h2>")
              $("#player1").remove()
          }
+
+     })
+     database.ref().on("value", function (childSnapshot) {
          var player2Check = childSnapshot.val().players.player2.selected_yn
          if (player2Check === true) {
              window.name2 = childSnapshot.val().players.player2.name
