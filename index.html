@@ -38,7 +38,10 @@
                 <div id="rock"></div>
             </div>
             <div class="col-md-4">
-                <div id="paper">
+                <div id="paper"> <h1>Type name and select player #:</h1>
+                    <form>
+                        <input type="text" id="nameInput">
+                    </form>
                     <button type="button" class="btn btn-dark" id="player1">Player 1</button>
                     <button type="button" class="btn btn-dark" id="player2">Player 2</button>
 
@@ -54,12 +57,19 @@
         <br/>
         <br/>
         <br/>
-        <div class="col-md-12" id="announcements"></div>
-    
-    <div class="row theButton">
-        <div class="col-md-12">
+        <div class="col-md-12" id="announcements"><div id="player-one"></div><div id="player-two"></div></div>
+        
+    <div class="row theButton theChatRow">
+        <div class="col-md-6">
             <div class="buttonz" id="chat"> </div>
             <div class="buttonz" id="chatBox"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="winsLosses">
+                <div id="p1Wins"></div>
+                <div id="p2Wins"></div>
+                <div id="tied"></div>
+            </div>
         </div>
     </div>
     </div>

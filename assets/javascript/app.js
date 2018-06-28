@@ -2,6 +2,9 @@
  var waiting = 0;
  var p1 = 0;
  var p2 = 0;
+ var p1Wins = 0;
+ var p2Wins = 0;
+ var ties = 0;
 
  // Initialize Firebase
  var config = {
@@ -20,11 +23,33 @@
 
  function variablesPlayer1() {
      window.attributes = ["p1-rock", "p1-paper", "p1-scissors"]
+     var name = $("#nameInput").val()
+     database.ref().child('players/player1/name').set(name)
+     database.ref().child("players/player1/selected_yn").set(true)
+     var connect1 = database.ref("players/player1");
+     connect1.onDisconnect().remove();
+     var clearTheChat = database.ref("chat");
+     clearTheChat.onDisconnect().remove();
+     database.ref().on("value", function (childSnapshot) {
+
+         //  var player2Check = childSnapshot.val().players.player2.selected_yn
+
+     })
  }
 
  function variablesPlayer2() {
      window.attributes = ["p2-rock", "p2-paper", "p2-scissors"]
+     var name = $("#nameInput").val();
+     database.ref().child('players/player2/name').set(name)
+     database.ref().child("players/player2/selected_yn").set(true)
+     var connect2 = database.ref("players/player2");
+     connect2.onDisconnect().remove();
+     var clearTheChat = database.ref("chat");
+     clearTheChat.onDisconnect().remove();
+
  }
+
+
 
  function choosePlayer() {
      values = ["Rock", "Paper", "Scissors"]
@@ -60,6 +85,7 @@
      choosePlayer();
      clicks();
      chat();
+     clearButton();
  })
 
  $("#player2").on("click", function () {
@@ -67,6 +93,7 @@
      choosePlayer();
      clicks();
      chat();
+     clearButton();
  })
 
 
@@ -95,13 +122,13 @@
  function submit() {
      $("#submitButton").on("click", function () {
          event.preventDefault()
-         // database.ref().child("chat").set("chat");
+         //  database.ref().child("chat").set("chat");
          var chatText = $("#chatText").val();
          var x = {
              chat: chatText
          }
          database.ref().child("chat").push(x);
-         //  $("#chatBox").html("")
+         //   $("#chatBox").html("")
 
          database.ref().on("child_added", function (childSnapshot) {
 
@@ -116,37 +143,11 @@
 
 
              }
-             //  $("#chatBox").append(words.chat + "<br>")
+             //   $("#chatBox").append(words.chat + "<br>")
 
          })
      })
  }
-
- database.ref().on("value", function (childSnapshot) {
-
-     // console.log(childSnapshot.val());
-
-     // Store everything into a variable.
-     $("#chatBox").html("")
-
-
-     // console.log(childSnapshot.val());
-
-     // Store everything into a variable.
-     var words = childSnapshot.val().chat;
-     console.log(words)
-     for (x in words) {
-         console.log(words[x].chat)
-         $("#chatBox").append(words[x].chat + "<br>")
-
-
-     }
- })
-
-
-
-
-
 
  function clicks() {
      $("#p1-rock").on("click", function () {
@@ -222,20 +223,82 @@
          }
      }
      if (p1 === 1) {
-         $("#announcements").html("<h1>Player 1 Wins</h1>")
+         $("#announcements").html("<h1>" + name1 + " Wins</h1>")
+         setTimeout(function () {
+             $("#announcements").html("");
+         }, 5000);
          p1 = 0;
+         p1Wins++;
+         database.ref().child('players/player1/wins').set(p1Wins);
+         database.ref().on("value" ,function (x) {
+            p1Wins = x.val().players.player1.wins
+        })
+         $("#p1Wins").html("<h3>" + name1 + " Wins: " + p1Wins + "</h3>")
+
      }
      if (p2 === 1) {
-         $("#announcements").html("<h1>Player 2 Wins</h1>");
-         setTimeout(function() {
-            $("#announcements").html("");
-         },5000);
+         $("#announcements").html("<h1>" + name2 + "<h1>Wins</h1>");
+         setTimeout(function () {
+             $("#announcements").html("");
+         }, 5000);
          p2 = 0;
+         p2Wins++
+         database.ref().child('players/player2/wins').set(p2Wins);
+         database.ref().on("value" ,function (x) {
+            p2Wins = x.val().players.player2.wins
+        })
+         $("#p2Wins").html("<h3>" + name2 + " Wins: " + p2Wins + "</h3>")
      }
      if (p1 === 2 && p2 === 2) {
          $("#announcements").html("<h1>Tie</h1>");
+         setTimeout(function () {
+             $("#announcements").html("");
+         }, 5000);
          p1 = 0;
          p2 = 0;
+         ties++
+         database.ref().child('players/ties').set(ties);
+         database.ref().on("value" ,function (x) {
+             ties = x.val().players.ties
+         })
+         $("#tied").html("<h3>Ties: " + ties + "</h3>")
+
      }
      database.ref().child("playerchoices").remove();
  }
+
+
+ database.ref().on("value", function (childSnapshot) {
+
+     // console.log(childSnapshot.val());
+
+     // Store everything into a variable.
+     $("#chatBox").html("")
+
+
+     var words = childSnapshot.val().chat;
+
+     for (x in words) {
+
+         $("#chatBox").append(words[x].chat + "<br>")
+     }
+ })
+
+ function clearButton() {
+     database.ref().on("value", function (childSnapshot) {
+         var player1Check = childSnapshot.val().players.player1.selected_yn
+         if (player1Check === true) {
+             window.name1 = childSnapshot.val().players.player1.name
+             $("#player-one").html("<h2>Player 1 is " + name1 + "</h2>")
+             $("#player1").remove()
+         }
+         var player2Check = childSnapshot.val().players.player2.selected_yn
+         if (player2Check === true) {
+             window.name2 = childSnapshot.val().players.player2.name
+             $("#player-two").html("<h2>Player 2 is " + name2 + "</h2>")
+             $("#player2").remove()
+
+         }
+     })
+ }
+ clearButton();
